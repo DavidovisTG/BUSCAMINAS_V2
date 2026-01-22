@@ -369,4 +369,32 @@ public class Generator : MonoBehaviour
         yield return new WaitForSecondsRealtime(2F);
         GameManager.instance.GameOverWin();
     }
+
+    public IEnumerator LoseAndWaitToLoseScreen(Cell explodedBomb)
+    {
+        //End game
+        GameManager.instance.gameOver = true;
+
+        //COLOR OF PRESSED MINED CELL TO RED
+        explodedBomb.GetComponent<SpriteRenderer>().material.color = Color.red;
+
+        //For each mined cell
+        foreach (Cell c in Generator.instance.GetBombedCells())
+        {
+            //SHOW ITS BOMB
+            c.transform.GetChild(1).gameObject.SetActive(true);
+
+            //HIDE DIAMOND IN CASE IT WAS FLAGGED
+            c.transform.GetChild(2).gameObject.SetActive(false);
+        }
+
+        //ANIMATE EXPLOSION OF PRESSED MINED CELL
+        explodedBomb.Explode();
+
+        //EXPLOSION SOUND
+        explosionSound.Play();
+
+        yield return new WaitForSecondsRealtime(2F);
+        GameManager.instance.GameOverLose();
+    }
 }

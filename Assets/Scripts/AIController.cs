@@ -17,6 +17,7 @@ public class AIController : MonoBehaviour
 
     public IEnumerator Play()
     {
+        moves = 0;
         firstPlay = true;
         GameObject[][] matrix = Generator.instance.ReturnMatrix();
         cellMatrix = new Cell[matrix.Length, matrix[0].Length];
@@ -41,7 +42,7 @@ public class AIController : MonoBehaviour
             //    // Si no hay lógica aplicable, jugar aleatoriamente
             //    RandomPlay();
             //}
-            AIDebugText.text = "Move: " + moves++;
+            AIDebugText.text = "Moves: " + ++moves;
             yield return null;
         }
     }
@@ -58,7 +59,7 @@ public class AIController : MonoBehaviour
             foreach (Cell cell in cellMatrix)
             {
                 StartCoroutine(Debug(cell));
-                yield return new WaitForSecondsRealtime(0.02F);
+                yield return new WaitForEndOfFrame();
                 bool cellResolved = false;
                 int bombs = -1;
                 bool securedBombs = false;
@@ -93,11 +94,11 @@ public class AIController : MonoBehaviour
                             actioned = true; break;
                             //return true;
                         }
-                        //ELSE, CHECK IF BOMBS NUMBER - FLAGGED CELLS - DISCOVERED CELLS = NUMBER OF
-                        //UNDISCOVERED/UNFLAGGED CELLS AROUND = ALL AVAILABLE CELLS LEFT ARE BOMBS
+                        //ELSE, IF NUMBER OF BOMBS = NUMBER OF UNDISCOVERED/UNFLAGGED
+                        //CELLS AROUND = ALL AVAILABLE CELLS LEFT ARE BOMBS
                         else
                         {
-                            if ((adjacentUndiscoveredCells - adjacentFlaggedCells) == (bombs - adjacentFlaggedCells))
+                            if (bombs == adjacentUndiscoveredCells)
                             {
                                 //REMAINING UNDISCOVERED CELLS ARE BOMBS
                                 securedBombs = true;
@@ -194,7 +195,7 @@ public class AIController : MonoBehaviour
     {
         Color col = c.GetComponent<SpriteRenderer>().color;
         c.GetComponent<SpriteRenderer>().color = Color.blue;
-        yield return new WaitForSecondsRealtime(0.010F);
+        yield return new WaitForEndOfFrame();
         c.GetComponent<SpriteRenderer>().color = col;
     }
 }

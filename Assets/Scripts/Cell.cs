@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -76,10 +75,7 @@ public class Cell : MonoBehaviour
             setSeen(true);
             if (hasBomb())
             {
-                //End game
-                GameManager.instance.gameOver = true;
-                StartCoroutine(LoseAndWaitToLoseScreen());
-
+                StartCoroutine(Generator.instance.LoseAndWaitToLoseScreen(this));
             }
             else
             {
@@ -99,29 +95,10 @@ public class Cell : MonoBehaviour
         }
     }
 
-    private IEnumerator LoseAndWaitToLoseScreen()
+   
+
+    public void Explode()
     {
-        //COLOR OF PRESSED MINED CELL TO RED
-        GetComponent<SpriteRenderer>().material.color = Color.red;
-
-        //For each mined cell
-        foreach (Cell c in Generator.instance.GetBombedCells())
-        {
-            //SHOW ITS BOMB
-            c.transform.GetChild(1).gameObject.SetActive(true);
-
-            //HIDE DIAMOND IN CASE IT WAS FLAGGED
-            c.transform.GetChild(2).gameObject.SetActive(false);
-        }
-
-        //ANIMATE EXPLOSION OF PRESSED MINED CELL
         animator.SetTrigger("Explode");
-        
-        //EXPLOSION SOUND
-        //explosionSound.Play();
-
-        yield return new WaitForSecondsRealtime(2F);
-        GameManager.instance.GameOverLose();
     }
-
 }
